@@ -1,0 +1,109 @@
+<idea-plugin>
+    <id>com.tabmanager.jetbrains</id>
+    <name>Tab Manager</name>
+    <version>1.0.0</version>
+
+    <vendor email="support@tabmanager.com" url="https://github.com/maka4h/jetbrains-tab-manager">
+        Tab Manager
+    </vendor>
+
+    <description><![CDATA[
+        <b>Tab Manager</b> — Advanced tab management for all JetBrains IDEs.
+        <br/><br/>
+        <b>Features:</b>
+        <ul>
+            <li><b>Tab Grouping</b> — Select and group editor tabs under named labels. Expand/collapse groups in the
+                tool window. Add/remove tabs, rename or delete groups.</li>
+            <li><b>Tab Coloring</b> — Assign colors (Red, Blue, Green, Yellow, Orange, Purple, Cyan, Pink) to individual
+                tabs or entire groups. Colors persist across IDE restarts.</li>
+            <li><b>Workspaces</b> — Save and restore named snapshots of your open tabs and tool windows. Switch between
+                workspaces instantly. Rename, update, or delete workspaces.</li>
+            <li><b>Dedicated Tool Window</b> — "Tab Manager" panel with Groups and Workspaces sections.</li>
+        </ul>
+        <br/>
+        Works in IntelliJ IDEA, GoLand, PyCharm, RustRover, WebStorm, and all other JetBrains IDEs.
+    ]]></description>
+
+    <change-notes><![CDATA[
+        <b>1.0.0</b>
+        <ul>
+            <li>Initial release with Tab Grouping, Tab Coloring, and Workspaces features.</li>
+        </ul>
+    ]]></change-notes>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Project-level services -->
+        <projectService
+            serviceImplementation="com.tabmanager.services.TabGroupService"/>
+        <projectService
+            serviceImplementation="com.tabmanager.services.WorkspaceService"/>
+        <projectService
+            serviceImplementation="com.tabmanager.services.TabColorService"/>
+
+        <!-- Tab color provider -->
+        <editorTabColorProvider
+            implementation="com.tabmanager.extensions.TabColorProvider"/>
+
+        <!-- Tool window -->
+        <toolWindow
+            id="Tab Manager"
+            anchor="right"
+            factoryClass="com.tabmanager.ui.TabManagerToolWindowFactory"
+            icon="/icons/tabmanager.svg"/>
+    </extensions>
+
+    <actions>
+        <!-- Main action group in the Tools menu -->
+        <group id="TabManager.Menu" text="Tab Manager" description="Tab Manager actions" popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <action id="TabManager.CreateGroup"
+                    class="com.tabmanager.actions.CreateGroupAction"
+                    text="Create New Group"
+                    description="Create a new tab group from currently selected/open tabs">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift G"/>
+            </action>
+            <action id="TabManager.AddToGroup"
+                    class="com.tabmanager.actions.AddToGroupAction"
+                    text="Add Tab to Group..."
+                    description="Add the current tab to an existing group"/>
+            <action id="TabManager.SetTabColor"
+                    class="com.tabmanager.actions.SetTabColorAction"
+                    text="Set Tab Color..."
+                    description="Assign a color to the current tab(s)">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift K"/>
+            </action>
+            <separator/>
+            <action id="TabManager.SaveWorkspace"
+                    class="com.tabmanager.actions.SaveWorkspaceAction"
+                    text="Save Workspace..."
+                    description="Save the current tabs and views as a named workspace">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift W"/>
+            </action>
+            <action id="TabManager.SwitchWorkspace"
+                    class="com.tabmanager.actions.SwitchWorkspaceAction"
+                    text="Switch Workspace..."
+                    description="Switch to a saved workspace">
+                <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift alt W"/>
+            </action>
+        </group>
+
+        <!-- Editor tab context menu -->
+        <group id="TabManager.TabContextMenu" text="Tab Manager" popup="true">
+            <add-to-group group-id="EditorTabPopupMenu" anchor="last"/>
+            <action id="TabManager.TabCtx.CreateGroup"
+                    class="com.tabmanager.actions.CreateGroupAction"
+                    text="Create New Group from Selected Tabs"
+                    description="Create a new tab group from currently selected/open tabs"/>
+            <action id="TabManager.TabCtx.AddToGroup"
+                    class="com.tabmanager.actions.AddToGroupAction"
+                    text="Add to Group..."
+                    description="Add this tab to an existing group"/>
+            <action id="TabManager.TabCtx.SetColor"
+                    class="com.tabmanager.actions.SetTabColorAction"
+                    text="Set Tab Color..."
+                    description="Assign a color to this tab"/>
+        </group>
+    </actions>
+</idea-plugin>
